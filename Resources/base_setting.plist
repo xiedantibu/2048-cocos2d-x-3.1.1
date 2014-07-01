@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>metadata</key>
+	<dict>
+		<key>format</key>
+		<integer>1</integer>
+	</dict>
+	<key>data</key>
+	<dict>
+		<key>SizeX</key>
+		<integer>4</integer>
+		<key>SizeY</key>
+		<string>4</string>
+		<key>settings_variety_values</key>
+		<string>type-1</string>
+		<key>type-1</key>
+		<string>2|4|8|16|32|64|128|256|512|1024|2048</string>
+		<key>type-2</key>
+		<string>2|4|8|16|32|64|128|256|512|1024|2048|4096</string>
+		<key>type-3</key>
+		<string>夏|商|周|秦|汉|三国|晋|南朝|北朝|隋|唐|五代|十国|宋|元|明|清|民国|PRC</string>
+	</dict>
+</dict>
+</plist>
