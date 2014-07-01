@@ -33,6 +33,8 @@
 		2597EF16195820050085C52F /* bgpl.png in Resources */ = {isa = PBXBuildFile; fileRef = 2597EF14195820050085C52F /* bgpl.png */; };
 		2597EF19195820AE0085C52F /* VisibleRect.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 2597EF17195820AE0085C52F /* VisibleRect.cpp */; };
 		2597EF1E19582B260085C52F /* base_setting.plist in Resources */ = {isa = PBXBuildFile; fileRef = 2597EF1D19582B260085C52F /* base_setting.plist */; };
+		25F9979A1962AE3300030B28 /* ClearSans-Light.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 25F997981962AE3300030B28 /* ClearSans-Light.ttf */; };
+		25F9979B1962AE3300030B28 /* ClearSans-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 25F997991962AE3300030B28 /* ClearSans-Regular.ttf */; };
 		288765A50DF7441C002DB57D /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 288765A40DF7441C002DB57D /* CoreGraphics.framework */; };
 		503AE0F817EB97AB00D1A890 /* Icon.icns in Resources */ = {isa = PBXBuildFile; fileRef = 503AE0F617EB97AB00D1A890 /* Icon.icns */; };
 		503AE10017EB989F00D1A890 /* AppController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 503AE0FB17EB989F00D1A890 /* AppController.mm */; };
@@ -247,6 +249,8 @@
 		2597EF17195820AE0085C52F /* VisibleRect.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = VisibleRect.cpp; path = ../Classes/VisibleRect.cpp; sourceTree = "<group>"; };
 		2597EF18195820AE0085C52F /* VisibleRect.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = VisibleRect.h; path = ../Classes/VisibleRect.h; sourceTree = "<group>"; };
 		2597EF1D19582B260085C52F /* base_setting.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = base_setting.plist; sourceTree = "<group>"; };
+		25F997981962AE3300030B28 /* ClearSans-Light.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "ClearSans-Light.ttf"; sourceTree = "<group>"; };
+		25F997991962AE3300030B28 /* ClearSans-Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "ClearSans-Regular.ttf"; sourceTree = "<group>"; };
 		25FBBEBC195AAAF800BE2B71 /* Cell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Cell.h; path = ../Classes/Cell.h; sourceTree = "<group>"; };
 		25FBBEC3195ABB4300BE2B71 /* Tile.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Tile.h; path = ../Classes/Tile.h; sourceTree = "<group>"; };
 		288765A40DF7441C002DB57D /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
@@ -485,6 +489,8 @@
 		78C7DDAA14EBA5050085D0C2 /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				25F997981962AE3300030B28 /* ClearSans-Light.ttf */,
+				25F997991962AE3300030B28 /* ClearSans-Regular.ttf */,
 				256017CE195BFAE200A265FD /* ClearSans-Bold.ttf */,
 				256017CF195BFAE200A265FD /* menu.png */,
 				256017D0195BFAE200A265FD /* score.png */,
@@ -667,6 +673,8 @@
 				5087E78617EB970100C73F5D /* Icon-76.png in Resources */,
 				5087E77F17EB970100C73F5D /* Default@2x.png in Resources */,
 				50EF629917ECD46A001EB2F8 /* Icon-100.png in Resources */,
+				25F9979A1962AE3300030B28 /* ClearSans-Light.ttf in Resources */,
+				25F9979B1962AE3300030B28 /* ClearSans-Regular.ttf in Resources */,
 				1AFAF8BC16D35E4900DB1158 /* CloseNormal.png in Resources */,
 				2597EF15195820050085C52F /* bgb.png in Resources */,
 				5087E78317EB970100C73F5D /* Icon-152.png in Resources */,

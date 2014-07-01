@@ -16,6 +16,8 @@ static const int M_TAG_SPRITES              =0x1002;
 static const int M_TAG_LABEL                =0x1003;
 static const int M_TAG_LAYERBG              =0x1004;
 static const int M_TAG_Exit                 =0x1005;
+static const int M_TAG_SCORE                =0x1006;
+static const int M_TAG_HIGH_SCORE           =0x1007;
 
 static const int M_ZORDER_spriteItem        =1000;
 static const int M_ZORDER_middle            =1001;
@@ -31,6 +33,8 @@ static const char M_IMG_MENU[]              ="menu.png";
 static const char M_IMG_SCORE[]              ="score.png";
 
 static const char M_FONT_CLEARSANS[]              ="ClearSans-Bold.ttf";
+static const char M_FONT_CLEARSANS_2[]              ="ClearSans-Light.ttf";
+static const char M_FONT_CLEARSANS_3[]              ="ClearSans-Regular.ttf";
 
 
 static const char M_FILE_BASE_SETTING[]         ="base_setting.plist";

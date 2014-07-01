@@ -34,8 +34,8 @@ MainLayer::MainLayer()
     mBgColors.insert({1024,Color4B(237, 197, 63,255)});
     mBgColors.insert({2048,Color4B(236, 196, 0,255)});
     
-    mFontColors.insert({2,Color3B(118,109,101)});
-    mFontColors.insert({4,Color3B(118,109,101)});
+    mFontColors.insert({2,Color3B(115,109,98)});
+    mFontColors.insert({4,Color3B(115,109,98)});
     mFontColors.insert({8,Color3B(254,254,254)});
     mFontColors.insert({16,Color3B(255,255,255)});
     mFontColors.insert({32,Color3B(254,254,254)});
@@ -51,11 +51,6 @@ MainLayer::~MainLayer()
 {
 
     CC_SAFE_RELEASE_NULL(mLayerBg);
-//    for (std::vector<std::vector<ProgressTimer *>>::iterator iter=mSprites.begin();iter!=mSprites.end();iter++) {
-//        for (std::vector<ProgressTimer *>::iterator itter=(*iter).begin(); itter!=(*iter).end(); itter++) {
-//            CC_SAFE_RELEASE_NULL(*itter);
-//        }
-//    }
     for (size_t i=0; i!=sizeX; i++) {
         for (size_t j=0; j!=sizeY; j++) {
             if (mSprites[i][j]) {
@@ -105,33 +100,88 @@ void MainLayer::initData()
     
     Size visibleSize = Director::getInstance()->getVisibleSize();
     
-    mLayerBg=LayerColor::create(Color4B(255, 247, 238, 255), visibleSize.width, visibleSize.height);
+    mLayerBg=LayerColor::create(Color4B(246, 246, 238, 255), visibleSize.width, visibleSize.height);
     mLayerBg->setPosition(0, 0);
     mLayerBg->retain();
     this->addChild(mLayerBg,M_TAG_LAYER_BG);
     
-    
-    TTFConfig config(M_FONT_CLEARSANS,35);
-    auto label=Label::createWithTTF(config, "2048");
-    label->setPosition(visibleSize.width/5,visibleSize.height/10*9);
-    label->setColor(Color3B::BLACK);
-    mLayerBg->addChild(label);
-    
     Sprite *sprite=Sprite::create(M_IMG_BGPL);
-    sprite->setColor(Color3B(187, 173,159));
+    sprite->setColor(Color3B(181, 170,156));
     sprite->setAnchorPoint(Vec2(0.5,0));
     sprite->setScale((visibleSize.width-40)/sprite->getContentSize().width);
     sprite->setPosition(Vec2(visibleSize.width/2, visibleSize.height/10));
     mLayerBg->addChild(sprite);
     log("x:%f=====y:%f==========width:%f========height:%f",sprite->getBoundingBox().origin.x,sprite->getBoundingBox().origin.y,sprite->getBoundingBox().size.width,sprite->getBoundingBox().size.height);
     
-    TTFConfig configReset(M_FONT_CLEARSANS,30);
+    
+    TTFConfig config(M_FONT_CLEARSANS,50);
+    auto label=Label::createWithTTF(config, "2048");
+    label->setAnchorPoint(Vec2(0.5, 0.5));
+    label->setPosition(visibleSize.width/4,visibleSize.height/10*9);
+    label->setColor(Color3B(115,109,98));
+    label->setScale(visibleSize.width/3/label->getBoundingBox().size.width);
+    mLayerBg->addChild(label);
+    
+    Sprite *scoreSprite=Sprite::create(M_IMG_SCORE);
+    scoreSprite->setScale(((visibleSize.width)/2-25)/scoreSprite->getContentSize().width/2);
+    scoreSprite->setPosition(visibleSize.width*5/8,visibleSize.height/10*9);
+    scoreSprite->setColor(Color3B(189,174,156));
+//    scoreSprite->setTag(M_TAG_SCORE);
+    mLayerBg->addChild(scoreSprite,1);
+    
+    TTFConfig scoreConfig(M_FONT_CLEARSANS,30);
+    auto scoreLabel=Label::createWithTTF(scoreConfig, "SCORE");
+    scoreLabel->setAnchorPoint(Vec2(0.5,1));
+    scoreLabel->setScale(scoreSprite->getBoundingBox().size.height/2/scoreLabel->getBoundingBox().size.height);
+    scoreLabel->setPosition(visibleSize.width*5/8,scoreSprite->getBoundingBox().origin.y+scoreSprite->getBoundingBox().size.height);
+    scoreLabel->setColor(Color3B(238,226,213));
+    mLayerBg->addChild(scoreLabel,2);
+    
+    TTFConfig scoreConfig2(M_FONT_CLEARSANS,30);
+    auto scoreLabel2=Label::createWithTTF(scoreConfig2, "0");
+    scoreLabel2->setScale(scoreSprite->getBoundingBox().size.height/2/scoreLabel2->getBoundingBox().size.height);
+    scoreLabel2->setAnchorPoint(Vec2(0.5,0));
+    scoreLabel2->setPosition(visibleSize.width*5/8,scoreSprite->getBoundingBox().origin.y);
+    scoreLabel2->setColor(Color3B(255,255,255));
+    scoreLabel2->setTag(M_TAG_SCORE);
+    mLayerBg->addChild(scoreLabel2,2);
+
+    
+    Sprite *hightSprite=Sprite::create(M_IMG_SCORE);
+    hightSprite->setScale(((visibleSize.width)/2-25)/scoreSprite->getContentSize().width/2);
+    hightSprite->setPosition(visibleSize.width*7/8,visibleSize.height/10*9);
+    hightSprite->setColor(Color3B(189,174,156));
+//    hightSprite->setTag(M_TAG_HIGH_SCORE);
+    mLayerBg->addChild(hightSprite,1);
+    
+    TTFConfig highscoreConfig(M_FONT_CLEARSANS,30);
+    auto highscoreLabel=Label::createWithTTF(highscoreConfig, "BEST");
+    highscoreLabel->setAnchorPoint(Vec2(0.5,1));
+    highscoreLabel->setScale(MIN(hightSprite->getBoundingBox().size.height/2/highscoreLabel->getBoundingBox().size.height, (hightSprite->getBoundingBox().size.width-5)/highscoreLabel->getBoundingBox().size.width));
+    highscoreLabel->setPosition(visibleSize.width*7/8,hightSprite->getBoundingBox().origin.y+scoreSprite->getBoundingBox().size.height);
+    highscoreLabel->setColor(Color3B(238,226,213));
+    mLayerBg->addChild(highscoreLabel,2);
+    
+    TTFConfig highscoreConfig2(M_FONT_CLEARSANS,30);
+    long highScores=getHighScore();
+    std::string score=__String::createWithFormat("%li",highScores)->getCString();
+    auto highscoreLabel2=Label::createWithTTF(highscoreConfig2, score);
+    highscoreLabel2->setScale(hightSprite->getBoundingBox().size.height/2/highscoreLabel2->getBoundingBox().size.height);
+    highscoreLabel2->setAnchorPoint(Vec2(0.5,0));
+    highscoreLabel2->setPosition(visibleSize.width*7/8,hightSprite->getBoundingBox().origin.y);
+    highscoreLabel2->setColor(Color3B(255,255,255));
+    highscoreLabel2->setTag(M_TAG_HIGH_SCORE);
+    mLayerBg->addChild(highscoreLabel2,2);
+
+
+    
+    TTFConfig configReset(M_FONT_CLEARSANS,20);
     auto resetButton=Label::createWithTTF(configReset,"RESTART");
-    resetButton->setColor(Color3B::RED);
+    resetButton->setColor(Color3B(225,125,0));
     auto menuLabel=MenuItemLabel::create(resetButton, CC_CALLBACK_0(MainLayer::restartGame, this));
     menuLabel->setAnchorPoint(Vec2(0,0));
     auto menu=Menu::create(menuLabel, NULL);
-    menu->setPosition(Vec2(sprite->getBoundingBox().origin.x+20,sprite->getBoundingBox().size.height+sprite->getBoundingBox().origin.y+20));
+    menu->setPosition(Vec2(sprite->getBoundingBox().origin.x+20,sprite->getBoundingBox().size.height+sprite->getBoundingBox().origin.y+10));
     mLayerBg->addChild(menu);
     
     width=(visibleSize.width-65)/sizeX;
@@ -141,7 +191,7 @@ void MainLayer::initData()
         mSprites[i].resize(sizeY);
         for (size_t j=0; j<sizeY; j++) {
             Sprite *spriteItem=Sprite::create(M_IMG_BGB);
-            spriteItem->setColor(Color3B(204, 192, 180));
+            spriteItem->setColor(Color3B(205, 194, 181));
             spriteItem->setScale(mSpriteScale);
             spriteItem->setPosition(Vec2(sprite->getBoundingBox().origin.x+5*(i+1)+(2*i+1)*width/2,sprite->getBoundingBox().origin.y+5*(j+1)+(2*j+1)*width/2));
             mLayerBg->addChild(spriteItem,M_ZORDER_spriteItem);
@@ -152,44 +202,8 @@ void MainLayer::initData()
     
     srand((unsigned)time( NULL ));
     newGame();
-    scheduleUpdate();
-//    buildExitLayer();
 }
 
-void MainLayer::update(float fDelta)
-{
-
-//    while (mqueue.size()>0) {
-//        std::vector<Vec2> mtemp=mqueue.front();
-//
-//        switch ((int)mtemp[2].y) {
-//            case -1:
-//            {
-//                 Action *action=Sequence::create(MoveTo::create(0.15f, mRePosition[mtemp[0].x][mtemp[0].y]),CallFuncN::create(CC_CALLBACK_0(MainLayer::movedSprites, this,Vec2(mtemp[0].x, mtemp[0].y),Vec2(mtemp[1].x,mtemp[1].y),1)), NULL);
-//                  mSprites[mtemp[1].x][mtemp[1].y]->runAction(action);
-//            }
-//                break;
-//            case -2:
-//            {
-//                Action *action=Sequence::create(MoveTo::create(0.15f, mRePosition[mtemp[0].x][mtemp[0].y]),CallFuncN::create(CC_CALLBACK_0(MainLayer::movedSprites, this,Vec2(mtemp[0].x, mtemp[0].y),Vec2(mtemp[1].x,mtemp[1].y),0)), NULL);
-//                mSprites[mtemp[1].x][mtemp[1].y]->runAction(action);
-//            }
-//                break;
-//            case -3:
-//            {
-////                Action *action=Sequence::create(MoveTo::create(0.15f, mRePosition[mtemp[0].x][mtemp[0].y]),CallFuncN::create(CC_CALLBACK_0(MainLayer::movedSprites, this,Vec2(mtemp[0].x, mtemp[0].y),Vec2(mtemp[1].x,mtemp[1].y),-2)), NULL);
-////                this->runAction(action);
-//                           Action *action=
-//                          Sequence::create(DelayTime::create(0.2f),CallFuncN::create(CC_CALLBACK_0(MainLayer::movedSprites, this,Vec2(-1, -1),Vec2(-1,-1),-2)), NULL);
-//                          this->runAction(action);
-//            }
-//                break;
-//            default:
-//                break;
-//        }
-//        mqueue.pop();
-//    }
-}
 
 #pragma mark - 游戏开始
 void MainLayer::newGame()
@@ -201,6 +215,12 @@ void MainLayer::newGame()
         recordHighScore();
     }
     score = 0;
+    auto scoreLabel2=(Label *)mLayerBg->getChildByTag(M_TAG_SCORE);
+    scoreLabel2->setString(__String::createWithFormat("%li",score)->getCString());
+    
+    auto highLabel=(Label *)mLayerBg->getChildByTag(M_TAG_HIGH_SCORE);
+    highLabel->setString(__String::createWithFormat("%li",highScore)->getCString());
+
     won = false;
     lose = false;
     addStartTiles();
@@ -240,9 +260,8 @@ void MainLayer::createSprite(TileOfCell *tile)
 {
 
     tile->print();
-    ProgressTo *to = ProgressTo::create(0.1, 100);
+    ProgressTo *to = ProgressTo::create(0.2, 100);
     Sprite *spriteItem=Sprite::create(M_IMG_BGB);
-//    spriteItem->setColor(mBgColors[tile->getValue()]);
     spriteItem->setScale(mSpriteScale);
     spriteItem->setCascadeColorEnabled(false);
     
@@ -250,9 +269,8 @@ void MainLayer::createSprite(TileOfCell *tile)
     middle->setCascadeColorEnabled(false);
     middle->setType(ProgressTimer::Type::BAR);
     middle->setMidpoint(Vec2(0.5f, 0.5f));
-    middle->setBarChangeRate(Vec2(0.5,0.5));
+    middle->setBarChangeRate(Vec2(0.3,0.3));
     middle->setScale(mSpriteScale);
-//    middle->setColor(mBgColors[tile->getValue()]);
     middle->setTag(M_TAG_SPRITES);
     middle->setPosition(mRePosition[tile->getX()][tile->getY()]);
     Vec2 vec=middle->convertToNodeSpace(middle->convertToWorldSpace(Vec2(0, 0)));
@@ -276,7 +294,6 @@ void MainLayer::createSprite(TileOfCell *tile)
     mLayerBg->addChild(middle,M_ZORDER_middle);
     middle->retain();
     mSprites[tile->getX()][tile->getY()]=middle;
-    log("===========99999===%i==%i===%p===",tile->getX(),tile->getY(),mSprites[tile->getX()][tile->getY()]);
 }
 
 #pragma mark - RandomTile
@@ -345,7 +362,7 @@ bool MainLayer::move (int direction)
             if (tile) {
                 std::vector<Vec2> mCell=findFarthestPosition(xx, yy, vector);
                 TileOfCell *next=grid.getCellContent(mCell[1].x,mCell[1].y);
-                if (next != nullptr && next->getValue() == tile->getValue() && next->getMergedFrom().size()== 0)
+                if (next != nullptr && next->getValue() == tile->getValue() && next->getMergedFrom().size()== 0)//合并
                 {
                 
                     moved=true;
@@ -375,14 +392,23 @@ bool MainLayer::move (int direction)
 
                     score+=merged->getValue();
                     highScore=MAX(score, highScore);
+                    recordHighScore();
                     
+                    auto scoreLabel2=(Label *)mLayerBg->getChildByTag(M_TAG_SCORE);
+                    scoreLabel2->setString(__String::createWithFormat("%li",score)->getCString());
+                    
+                    auto highLabel=(Label *)mLayerBg->getChildByTag(M_TAG_HIGH_SCORE);
+                    highLabel->setString(__String::createWithFormat("%li",highScore)->getCString());
+
+                    
+
                     if (merged->getValue()==maxScore) {
                         won=true;
                     }
                 }else
                 {
                 
-                    if (!positionsEqual(tile, mCell[0])) {
+                    if (!positionsEqual(tile, mCell[0])) {//移动
                         log("===========22222=========");
                         moved=true;
                         moveTile(tile, mCell[0]);
@@ -415,11 +441,9 @@ bool MainLayer::move (int direction)
 
         }
     }
-//    if (moved) {
-        if (!movesAvailable()) {
-                lose = true;
-        }
-//    }
+    if (!movesAvailable()) {
+        lose = true;
+    }
 
 
 }
@@ -706,11 +730,11 @@ void MainLayer::buildExitLayer()
     mLayerExit->setTag(M_TAG_Exit);
 
     
-    TTFConfig config(M_FONT_CLEARSANS,40);
+    TTFConfig config(M_FONT_CLEARSANS,45);
     auto label=Label::createWithTTF(config, "Leave game?");
     label->setColor(Color3B(100,100,100));
     
-    TTFConfig exitconfig(M_FONT_CLEARSANS,35);
+    TTFConfig exitconfig(M_FONT_CLEARSANS,40);
     auto exit=Label::createWithTTF(exitconfig, "Exit");
     exit->setColor(Color3B(100,100,100));
     
@@ -721,9 +745,9 @@ void MainLayer::buildExitLayer()
     menuLabel->setEnabled(false);
     menuLabel->setPosition(0, 0);
     MenuItemLabel *exitLabel=MenuItemLabel::create(exit,CC_CALLBACK_0(MainLayer::exitApp, this));
-    exitLabel->setPosition(-visibleSize.width/4,menuLabel->getPositionY()-menuLabel->getContentSize().height-20);
+    exitLabel->setPosition(-visibleSize.width/4,menuLabel->getPositionY()-menuLabel->getContentSize().height-30);
     MenuItemLabel *nopeLabel=MenuItemLabel::create(nope,CC_CALLBACK_0(MainLayer::isNodeCreate, this));
-    nopeLabel->setPosition(visibleSize.width/4,menuLabel->getPositionY()-menuLabel->getContentSize().height-20);
+    nopeLabel->setPosition(visibleSize.width/4,menuLabel->getPositionY()-menuLabel->getContentSize().height-30);
     
     Menu *menu=Menu::create(menuLabel, exitLabel,nopeLabel,NULL);
     mLayerExit->addChild(menu);

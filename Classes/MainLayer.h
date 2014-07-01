@@ -50,7 +50,6 @@ public:
     void exitApp();
     void isNodeCreate();
     void restartGame();
-    void update(float fDelta);
     void removeSprites();
 private:
     void initData();
