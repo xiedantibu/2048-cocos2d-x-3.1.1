@@ -44,8 +44,13 @@ using namespace cocos2d;
 using namespace std;
 
 string g_apkPath;
+string g_logPath;
 
 extern "C" {
+
+   JNIEXPORT void JNICALL Java_org_cocos2dx_lib_Cocos2dxHelper_nativeSetSdPath(JNIEnv*  env, jobject thiz, jstring logPath) {
+	   g_logPath = JniHelper::jstring2string(logPath);
+   }
 
     JNIEXPORT void JNICALL Java_org_cocos2dx_lib_Cocos2dxHelper_nativeSetApkPath(JNIEnv*  env, jobject thiz, jstring apkPath) {
         g_apkPath = JniHelper::jstring2string(apkPath);
@@ -74,6 +79,10 @@ extern "C" {
             if (s_pfEditTextCallback) s_pfEditTextCallback("", s_ctx);
         }
     }
+}
+
+const char * getLogPath() {
+    return g_logPath.c_str();
 }
 
 const char * getApkPath() {

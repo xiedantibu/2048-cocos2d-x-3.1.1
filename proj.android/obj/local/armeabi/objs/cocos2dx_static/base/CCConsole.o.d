@@ -156,7 +156,8 @@ obj/local/armeabi/objs/cocos2dx_static/base/CCConsole.o: \
  /Users/agile/Documents/cocos2d-x/cocos2d-x-3.1.1/project/2048/proj.android/../cocos2d/cocos/./platform/CCImage.h \
  /Users/agile/Documents/cocos2d-x/cocos2d-x-3.1.1/project/2048/proj.android/../cocos2d/cocos/./platform/android/CCGLView.h \
  /Users/agile/Documents/cocos2d-x/cocos2d-x-3.1.1/project/2048/proj.android/../cocos2d/cocos/./platform/CCGLViewProtocol.h \
- /Users/agile/Documents/cocos2d-x/cocos2d-x-3.1.1/project/2048/proj.android/../cocos2d/cocos/./base/base64.h
+ /Users/agile/Documents/cocos2d-x/cocos2d-x-3.1.1/project/2048/proj.android/../cocos2d/cocos/./base/base64.h \
+ /Users/agile/Documents/cocos2d-x/cocos2d-x-3.1.1/project/2048/proj.android/../cocos2d/cocos/./platform/android/jni/Java_org_cocos2dx_lib_Cocos2dxHelper.h
 
 /Users/agile/Documents/cocos2d-x/cocos2d-x-3.1.1/project/2048/proj.android/../cocos2d/cocos/./base/CCConsole.h:
 
@@ -471,3 +472,5 @@ obj/local/armeabi/objs/cocos2dx_static/base/CCConsole.o: \
 /Users/agile/Documents/cocos2d-x/cocos2d-x-3.1.1/project/2048/proj.android/../cocos2d/cocos/./platform/CCGLViewProtocol.h:
 
 /Users/agile/Documents/cocos2d-x/cocos2d-x-3.1.1/project/2048/proj.android/../cocos2d/cocos/./base/base64.h:
+
+/Users/agile/Documents/cocos2d-x/cocos2d-x-3.1.1/project/2048/proj.android/../cocos2d/cocos/./platform/android/jni/Java_org_cocos2dx_lib_Cocos2dxHelper.h:

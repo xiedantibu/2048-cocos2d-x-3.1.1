@@ -48,9 +48,12 @@ public:
     void buildExitLayer();
     void removeNode(Node *node);
     void exitApp();
-    void isNodeCreate();
-    void restartGame();
+    void isNodeCreate(int flag);
+    void restartGame(int flag);
     void removeSprites();
+    void buildGameOver();
+    void buildSuccess();
+    void changeMaxScore();
 private:
     void initData();
     float width=0.0f;

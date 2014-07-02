@@ -29,6 +29,7 @@ THE SOFTWARE.
 
 typedef void (*EditTextCallback)(const char* pText, void* ctx);
 
+extern const char * getLogPath();
 extern const char * getApkPath();
 extern void showDialogJNI(const char * pszMsg, const char * pszTitle);
 extern void showEditTextDialogJNI(const char* pszTitle, const char* pszContent, int nInputMode, int nInputFlag, int nReturnType, int nMaxLength, EditTextCallback pfEditTextCallback, void* ctx);

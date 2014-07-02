@@ -63,6 +63,9 @@
 #include "renderer/CCTextureCache.h"
 #include "CCGLView.h"
 #include "base/base64.h"
+#if CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID
+#include "jni/Java_org_cocos2dx_lib_Cocos2dxHelper.h"
+#endif
 NS_CC_BEGIN
 
 //TODO: these general utils should be in a seperate class
@@ -213,9 +216,20 @@ static void _log(const char *format, va_list args)
 
     vsnprintf(buf, MAX_LOG_LENGTH-3, format, args);
     strcat(buf, "\n");
-
-#if CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID
+    #if CC_TARGET_PLATFORM == CC_PLATFORM_ANDROID
     __android_log_print(ANDROID_LOG_DEBUG, "cocos2d-x debug info",  "%s", buf);
+//    std::string filepath = getLogPath();
+//    filepath+="/log.txt";
+//    FILE* fp = fopen(filepath.c_str(), "a+");
+//
+//    if(!fp)
+//    {
+//        return;
+//    }
+//    fprintf(fp, "cocos2d:%s", buf);
+//    fflush(fp);
+//    fclose(fp);
+    
 
 #elif CC_TARGET_PLATFORM ==  CC_PLATFORM_WIN32 || CC_TARGET_PLATFORM == CC_PLATFORM_WINRT || CC_TARGET_PLATFORM == CC_PLATFORM_WP8
     WCHAR wszBuf[MAX_LOG_LENGTH] = {0};

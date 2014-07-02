@@ -178,7 +178,7 @@ void MainLayer::initData()
     TTFConfig configReset(M_FONT_CLEARSANS,20);
     auto resetButton=Label::createWithTTF(configReset,"RESTART");
     resetButton->setColor(Color3B(225,125,0));
-    auto menuLabel=MenuItemLabel::create(resetButton, CC_CALLBACK_0(MainLayer::restartGame, this));
+    auto menuLabel=MenuItemLabel::create(resetButton, CC_CALLBACK_0(MainLayer::restartGame, this,1));
     menuLabel->setAnchorPoint(Vec2(0,0));
     auto menu=Menu::create(menuLabel, NULL);
     menu->setPosition(Vec2(sprite->getBoundingBox().origin.x+20,sprite->getBoundingBox().size.height+sprite->getBoundingBox().origin.y+10));
@@ -202,6 +202,7 @@ void MainLayer::initData()
     
     srand((unsigned)time( NULL ));
     newGame();
+//    buildGameOver();
 }
 
 
@@ -215,6 +216,7 @@ void MainLayer::newGame()
         recordHighScore();
     }
     score = 0;
+    maxScore=2048;
     auto scoreLabel2=(Label *)mLayerBg->getChildByTag(M_TAG_SCORE);
     scoreLabel2->setString(__String::createWithFormat("%li",score)->getCString());
     
@@ -234,7 +236,7 @@ void MainLayer::addStartTiles()
 
 }
 
-void MainLayer::restartGame()
+void MainLayer::restartGame(int flag)
 {
     Node *node=this->getChildByTag(M_TAG_Exit);
     if (node) {
@@ -243,7 +245,24 @@ void MainLayer::restartGame()
         return ;
     }
 
+    Node *gameOver=this->getChildByTag(M_TAG_GAME_OVER);
+    if (gameOver) {
+        if (flag!=2) {
+            
+            return;
+        }
+        removeNode(gameOver);
+    }
     
+    Node *gameSuccess=this->getChildByTag(M_TAG_GAME_SUCCESS);
+    if (gameSuccess) {
+        if (flag!=3) {
+            
+            return;
+        }
+        removeNode(gameSuccess);
+    }
+
     for (std::vector<std::vector<ProgressTimer *>>::iterator iter=mSprites.begin();iter!=mSprites.end();iter++) {
         for (std::vector<ProgressTimer *>::iterator itter=(*iter).begin(); itter!=(*iter).end(); itter++) {
             if((*itter))
@@ -294,6 +313,7 @@ void MainLayer::createSprite(TileOfCell *tile)
     mLayerBg->addChild(middle,M_ZORDER_middle);
     middle->retain();
     mSprites[tile->getX()][tile->getY()]=middle;
+
 }
 
 #pragma mark - RandomTile
@@ -461,8 +481,13 @@ bool MainLayer::move (int direction)
 
         }
     }
+    if (won) {
+        buildSuccess();
+    }
     if (!movesAvailable()) {
         lose = true;
+        buildGameOver();
+
     }
 
 
@@ -636,11 +661,20 @@ void MainLayer::onTouchMoved(Touch *touch, Event *unused_event)
 {
     Node *node=this->getChildByTag(M_TAG_Exit);
     if (node) {
-        Action *action=Sequence::create(FadeOut::create(0.5f),CallFuncN::create(CC_CALLBACK_0(MainLayer::removeNode, this,node)), NULL);
+        Action *action=Sequence::create(FadeOut::create(0.2f),CallFuncN::create(CC_CALLBACK_0(MainLayer::removeNode, this,node)), NULL);
         node->runAction(action);
         return ;
     }
     
+    Node *gameOver=this->getChildByTag(M_TAG_GAME_OVER);
+    if (gameOver) {
+        return;
+    }
+    
+    Node *gamesuccess=this->getChildByTag(M_TAG_GAME_SUCCESS);
+    if (gamesuccess) {
+        return;
+    }
     touchVec=touch->getLocation();
     log("+onTouchMoved++++touchvec+x:%f++y:%f+++",touchVec.x,touchVec.y);
     if (!won&&!lose) {
@@ -730,6 +764,18 @@ void MainLayer::onKeyReleased(EventKeyboard::KeyCode keyCode, Event* event)
 {
 
     if (keyCode==EventKeyboard::KeyCode::KEY_ESCAPE) {
+        
+        Node *gameOver=this->getChildByTag(M_TAG_GAME_OVER);
+        if (gameOver) {
+            removeNode(gameOver);
+            lose=false;
+            return;
+        }
+        Node *gameSuccess=this->getChildByTag(M_TAG_GAME_SUCCESS);
+        if (gameSuccess) {
+            restartGame(3);
+            return;
+        }
         Node *node=this->getChildByTag(M_TAG_Exit);
         if (node) {
             Action *action=Sequence::create(FadeOut::create(0.5f),CallFuncN::create(CC_CALLBACK_0(MainLayer::removeNode, this,node)), NULL);
@@ -750,14 +796,15 @@ void MainLayer::buildExitLayer()
     mLayerExit->setTag(M_TAG_Exit);
 
     
-    TTFConfig config(M_FONT_CLEARSANS,45);
+    TTFConfig config(M_FONT_CLEARSANS,50);
     auto label=Label::createWithTTF(config, "Leave game?");
     label->setColor(Color3B(100,100,100));
+    
     
     TTFConfig exitconfig(M_FONT_CLEARSANS,40);
     auto exit=Label::createWithTTF(exitconfig, "Exit");
     exit->setColor(Color3B(100,100,100));
-    
+
     auto nope=Label::createWithTTF(exitconfig, "Nope");
     nope->setColor(Color3B(100,100,100));
 
@@ -766,7 +813,7 @@ void MainLayer::buildExitLayer()
     menuLabel->setPosition(0, 0);
     MenuItemLabel *exitLabel=MenuItemLabel::create(exit,CC_CALLBACK_0(MainLayer::exitApp, this));
     exitLabel->setPosition(-visibleSize.width/4,menuLabel->getPositionY()-menuLabel->getContentSize().height-30);
-    MenuItemLabel *nopeLabel=MenuItemLabel::create(nope,CC_CALLBACK_0(MainLayer::isNodeCreate, this));
+    MenuItemLabel *nopeLabel=MenuItemLabel::create(nope,CC_CALLBACK_0(MainLayer::isNodeCreate, this,2));
     nopeLabel->setPosition(visibleSize.width/4,menuLabel->getPositionY()-menuLabel->getContentSize().height-30);
     
     Menu *menu=Menu::create(menuLabel, exitLabel,nopeLabel,NULL);
@@ -778,15 +825,58 @@ void MainLayer::exitApp()
     Director::getInstance()->end();
     
 }
-void MainLayer::isNodeCreate()
+void MainLayer::isNodeCreate(int flag)
 {
-    Node *node=this->getChildByTag(M_TAG_Exit);
-    if (node) {
-        Action *action=Sequence::create(FadeOut::create(0.5f),CallFuncN::create(CC_CALLBACK_0(MainLayer::removeNode, this,node)), NULL);
-        node->runAction(action);
-        return ;
+    
+    if (flag==2) {
+        Node *node=this->getChildByTag(M_TAG_Exit);
+        if (node) {
+            Action *action=Sequence::create(FadeOut::create(0.2f),CallFuncN::create(CC_CALLBACK_0(MainLayer::removeNode, this,node)), NULL);
+            node->runAction(action);
+            return ;
+        }
     }
+   
 }
+
+void MainLayer::buildGameOver()
+{
+    Size visibleSize = Director::getInstance()->getVisibleSize();
+    LayerColor *mLayerGameOver=LayerColor::create(Color4B(255, 255, 255, 180), visibleSize.width, visibleSize.height*3/4);
+    mLayerGameOver->setPosition(0, 0);
+    mLayerGameOver->setTag(M_TAG_GAME_OVER);
+    
+    TTFConfig config(M_FONT_CLEARSANS,45);
+    auto label=Label::createWithTTF(config, "Game Over");
+    label->setColor(Color3B(100,100,100));
+    
+    TTFConfig scoreconfig(M_FONT_CLEARSANS,20);
+    auto scoreLabel=Label::createWithTTF(scoreconfig, __String::createWithFormat("Your score %li points",score)->getCString());
+    scoreLabel->setColor(Color3B(100,100,100));
+    int length=scoreLabel->getStringLength();
+    for (size_t i=10; i<length-6; i++) {
+        Sprite * temp=scoreLabel->getLetter(i);
+        temp->setColor(Color3B(240, 204, 90));
+    }
+    TTFConfig tryAgainconfig(M_FONT_CLEARSANS,30);
+    auto tryAgain=Label::createWithTTF(tryAgainconfig, "Try Again");
+    tryAgain->setColor(Color3B(100,100,100));
+    
+    MenuItemLabel *menuLabel=MenuItemLabel::create(label);
+    menuLabel->setEnabled(false);
+    menuLabel->setPosition(0, 0);
+    MenuItemLabel *scoreLabelMenu=MenuItemLabel::create(scoreLabel);
+    scoreLabelMenu->setEnabled(false);
+    scoreLabelMenu->setPosition(0,menuLabel->getPositionY()-menuLabel->getContentSize().height/2-10);
+    MenuItemLabel *tryAgainLabel=MenuItemLabel::create(tryAgain,CC_CALLBACK_0(MainLayer::restartGame, this,2));
+    tryAgainLabel->setPosition(0,scoreLabelMenu->getPositionY()-scoreLabelMenu->getContentSize().height-25);
+    
+    Menu *menu=Menu::create(menuLabel, scoreLabelMenu,tryAgainLabel,NULL);
+    mLayerGameOver->addChild(menu);
+    this->addChild(mLayerGameOver, M_TAG_GAME_OVER);
+
+}
+
 void MainLayer::removeNode(Node *node)
 {
 
@@ -794,4 +884,51 @@ void MainLayer::removeNode(Node *node)
         node->removeFromParentAndCleanup(true);
     }
     
+}
+
+void MainLayer::buildSuccess()
+{
+
+    Size visibleSize = Director::getInstance()->getVisibleSize();
+    LayerColor *mLayerExit=LayerColor::create(Color4B(255, 255, 255, 180), visibleSize.width, visibleSize.height*3/4);
+    mLayerExit->setPosition(0, 0);
+    mLayerExit->setTag(M_TAG_GAME_SUCCESS);
+    
+    
+    TTFConfig config(M_FONT_CLEARSANS,40);
+    auto label=Label::createWithTTF(config, "You are Win !");
+    label->setColor(Color3B(100,100,100));
+    
+    
+    TTFConfig exitconfig(M_FONT_CLEARSANS,35);
+    auto exit=Label::createWithTTF(exitconfig, "CONT");
+    exit->setColor(Color3B(100,100,100));
+    
+    auto nope=Label::createWithTTF(exitconfig, "Nope");
+    nope->setColor(Color3B(100,100,100));
+    
+    MenuItemLabel *menuLabel=MenuItemLabel::create(label);
+    menuLabel->setEnabled(false);
+    menuLabel->setPosition(0, 0);
+    MenuItemLabel *exitLabel=MenuItemLabel::create(exit,CC_CALLBACK_0(MainLayer::changeMaxScore, this));
+    exitLabel->setPosition(-visibleSize.width/4,menuLabel->getPositionY()-menuLabel->getContentSize().height-30);
+    MenuItemLabel *nopeLabel=MenuItemLabel::create(nope,CC_CALLBACK_0(MainLayer::restartGame, this,3));
+    nopeLabel->setPosition(visibleSize.width/4,menuLabel->getPositionY()-menuLabel->getContentSize().height-30);
+    
+    Menu *menu=Menu::create(menuLabel, exitLabel,nopeLabel,NULL);
+    mLayerExit->addChild(menu);
+    this->addChild(mLayerExit, M_TAG_GAME_SUCCESS);
+}
+
+void MainLayer::changeMaxScore()
+{
+    maxScore*=2;
+    won=false;
+    Node *node=this->getChildByTag(M_TAG_GAME_SUCCESS);
+    if (node) {
+    
+        Action *action=Sequence::create(FadeOut::create(0.2f),CallFuncN::create(CC_CALLBACK_0(MainLayer::removeNode, this,node)), NULL);
+        node->runAction(action);
+    }
+
 }
