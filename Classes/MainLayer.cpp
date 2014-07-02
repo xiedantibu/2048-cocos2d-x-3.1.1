@@ -126,7 +126,7 @@ void MainLayer::initData()
     scoreSprite->setScale(((visibleSize.width)/2-25)/scoreSprite->getContentSize().width/2);
     scoreSprite->setPosition(visibleSize.width*5/8,visibleSize.height/10*9);
     scoreSprite->setColor(Color3B(189,174,156));
-//    scoreSprite->setTag(M_TAG_SCORE);
+    scoreSprite->setTag(M_TAG_SCORE_SPRITE);
     mLayerBg->addChild(scoreSprite,1);
     
     TTFConfig scoreConfig(M_FONT_CLEARSANS,30);
@@ -353,6 +353,7 @@ bool MainLayer::move (int direction)
     buildTraversalsY(vector, buildY);
     bool moved = false;
     prepareTiles();
+    tempScore=0;
     for (auto xx:buildX) {
         
         for (auto yy: buildY) {
@@ -391,6 +392,7 @@ bool MainLayer::move (int direction)
 
 
                     score+=merged->getValue();
+                    tempScore+=merged->getValue();
                     highScore=MAX(score, highScore);
                     recordHighScore();
                     
@@ -399,9 +401,7 @@ bool MainLayer::move (int direction)
                     
                     auto highLabel=(Label *)mLayerBg->getChildByTag(M_TAG_HIGH_SCORE);
                     highLabel->setString(__String::createWithFormat("%li",highScore)->getCString());
-
                     
-
                     if (merged->getValue()==maxScore) {
                         won=true;
                     }
@@ -435,6 +435,26 @@ bool MainLayer::move (int direction)
 
         }
         if (xx==buildX[buildX.size()-1]&&moved) {
+            if (tempScore!=0) {
+                auto scoreSprite=(Sprite *)mLayerBg->getChildByTag(M_TAG_SCORE_SPRITE);
+                TTFConfig scoreConfig(M_FONT_CLEARSANS,30);
+                Label *tempLabel=(Label *)mLayerBg->getChildByTag(M_TAG_TEMP);
+                if (tempLabel) {
+                    tempLabel->setString(__String::createWithFormat("+%li",tempScore)->getCString());
+                }else
+                {
+                   tempLabel=Label::createWithTTF(scoreConfig, __String::createWithFormat("+%li",tempScore)->getCString());
+                    tempLabel->setColor(Color3B::RED);
+                    mLayerBg->addChild(tempLabel, M_TAG_TEMP);
+                }
+                tempLabel->setPosition(scoreSprite->getPosition());
+                tempLabel->setTag(M_TAG_TEMP);
+                Action *actionTemp=Sequence::create(FadeIn::create(0.1f),MoveBy::create(0.3f, Vec2(0,10)),FadeOut::create(0.1), NULL);
+                tempLabel->runAction(actionTemp);
+                
+
+            }
+            
             Action *action=
             Sequence::create(DelayTime::create(0.2f),CallFuncN::create(CC_CALLBACK_0(MainLayer::removeSprites, this)), NULL);
             this->runAction(action);

@@ -66,6 +66,7 @@ private:
     long score = 0;
     long lastScore = 0;
     long highScore = 0;
+    long tempScore=0;
     bool won = false;
     bool lose = false;
     bool isMove=false;

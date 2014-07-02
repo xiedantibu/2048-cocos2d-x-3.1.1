@@ -18,6 +18,8 @@ static const int M_TAG_LAYERBG              =0x1004;
 static const int M_TAG_Exit                 =0x1005;
 static const int M_TAG_SCORE                =0x1006;
 static const int M_TAG_HIGH_SCORE           =0x1007;
+static const int M_TAG_TEMP                 =0x1008;
+static const int M_TAG_SCORE_SPRITE                 =0x1009;
 
 static const int M_ZORDER_spriteItem        =1000;
 static const int M_ZORDER_middle            =1001;
